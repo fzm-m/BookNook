@@ -1,0 +1,48 @@
+﻿@page "/membershiplevels/details"
+@using Microsoft.EntityFrameworkCore
+@using BookNook.Domain
+@inject IDbContextFactory<BookNook.Data.BookNookContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>MembershipLevel</h2>
+    <hr />
+    @if (membershiplevel is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">DiscountRate</dt>
+            <dd class="col-sm-10">@membershiplevel.DiscountRate</dd>
+            <dt class="col-sm-2">MembershipId</dt>
+            <dd class="col-sm-10">@membershiplevel.MembershipId</dd>
+        </dl>
+        <div>
+            <a href="@($"/membershiplevels/edit?id={membershiplevel.Id}")">Edit</a> |
+            <a href="@($"/membershiplevels")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private MembershipLevel? membershiplevel;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        membershiplevel = await context.MembershipLevel.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (membershiplevel is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

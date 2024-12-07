@@ -1,0 +1,52 @@
+﻿@page "/memberships/details"
+@using Microsoft.EntityFrameworkCore
+@using BookNook.Domain
+@inject IDbContextFactory<BookNook.Data.BookNookContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>Membership</h2>
+    <hr />
+    @if (membership is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">DateCreated</dt>
+            <dd class="col-sm-10">@membership.DateCreated</dd>
+            <dt class="col-sm-2">Status</dt>
+            <dd class="col-sm-10">@membership.Status</dd>
+            <dt class="col-sm-2">UserId</dt>
+            <dd class="col-sm-10">@membership.UserId</dd>
+            <dt class="col-sm-2">MembershipLevelId</dt>
+            <dd class="col-sm-10">@membership.MembershipLevelId</dd>
+        </dl>
+        <div>
+            <a href="@($"/memberships/edit?id={membership.Id}")">Edit</a> |
+            <a href="@($"/memberships")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private Membership? membership;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        membership = await context.Membership.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (membership is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

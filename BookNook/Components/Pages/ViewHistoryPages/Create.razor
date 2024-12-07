@@ -1,0 +1,54 @@
+﻿@page "/viewhistories/create"
+@using Microsoft.EntityFrameworkCore
+@using BookNook.Domain
+@inject IDbContextFactory<BookNook.Data.BookNookContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>ViewHistory</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="ViewHistory" OnValidSubmit="AddViewHistory" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="viewdate" class="form-label">ViewDate:</label> 
+                <InputDate id="viewdate" @bind-Value="ViewHistory.ViewDate" class="form-control" /> 
+                <ValidationMessage For="() => ViewHistory.ViewDate" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="userid" class="form-label">UserId:</label> 
+                <InputNumber id="userid" @bind-Value="ViewHistory.UserId" class="form-control" /> 
+                <ValidationMessage For="() => ViewHistory.UserId" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="itemid" class="form-label">ItemId:</label> 
+                <InputNumber id="itemid" @bind-Value="ViewHistory.ItemId" class="form-control" /> 
+                <ValidationMessage For="() => ViewHistory.ItemId" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/viewhistories">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private ViewHistory ViewHistory { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddViewHistory()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.ViewHistory.Add(ViewHistory);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/viewhistories");
+    }
+}

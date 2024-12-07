@@ -1,0 +1,59 @@
+﻿@page "/orderdetails/create"
+@using Microsoft.EntityFrameworkCore
+@using BookNook.Domain
+@inject IDbContextFactory<BookNook.Data.BookNookContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>OrderDetails</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="OrderDetails" OnValidSubmit="AddOrderDetails" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="quantity" class="form-label">Quantity:</label> 
+                <InputNumber id="quantity" @bind-Value="OrderDetails.Quantity" class="form-control" /> 
+                <ValidationMessage For="() => OrderDetails.Quantity" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="totalprice" class="form-label">TotalPrice:</label> 
+                <InputNumber id="totalprice" @bind-Value="OrderDetails.TotalPrice" class="form-control" /> 
+                <ValidationMessage For="() => OrderDetails.TotalPrice" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="orderid" class="form-label">OrderId:</label> 
+                <InputNumber id="orderid" @bind-Value="OrderDetails.OrderId" class="form-control" /> 
+                <ValidationMessage For="() => OrderDetails.OrderId" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="itemid" class="form-label">ItemId:</label> 
+                <InputNumber id="itemid" @bind-Value="OrderDetails.ItemId" class="form-control" /> 
+                <ValidationMessage For="() => OrderDetails.ItemId" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/orderdetails">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private OrderDetails OrderDetails { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddOrderDetails()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.OrderDetails.Add(OrderDetails);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/orderdetails");
+    }
+}

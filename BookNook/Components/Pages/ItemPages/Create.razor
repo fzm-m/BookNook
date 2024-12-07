@@ -1,0 +1,64 @@
+﻿@page "/items/create"
+@using Microsoft.EntityFrameworkCore
+@using BookNook.Domain
+@inject IDbContextFactory<BookNook.Data.BookNookContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Item</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Item" OnValidSubmit="AddItem" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="name" class="form-label">Name:</label> 
+                <InputText id="name" @bind-Value="Item.Name" class="form-control" /> 
+                <ValidationMessage For="() => Item.Name" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="type" class="form-label">Type:</label> 
+                <InputText id="type" @bind-Value="Item.Type" class="form-control" /> 
+                <ValidationMessage For="() => Item.Type" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="description" class="form-label">Description:</label> 
+                <InputText id="description" @bind-Value="Item.Description" class="form-control" /> 
+                <ValidationMessage For="() => Item.Description" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="price" class="form-label">Price:</label> 
+                <InputNumber id="price" @bind-Value="Item.Price" class="form-control" /> 
+                <ValidationMessage For="() => Item.Price" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="stock" class="form-label">Stock:</label> 
+                <InputNumber id="stock" @bind-Value="Item.Stock" class="form-control" /> 
+                <ValidationMessage For="() => Item.Stock" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/items">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Item Item { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddItem()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Item.Add(Item);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/items");
+    }
+}

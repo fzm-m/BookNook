@@ -1,0 +1,104 @@
+﻿@page "/orderdetails/edit"
+@using Microsoft.EntityFrameworkCore
+@using BookNook.Domain
+@inject IDbContextFactory<BookNook.Data.BookNookContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>OrderDetails</h2>
+<hr />
+@if (OrderDetails is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="OrderDetails" OnValidSubmit="UpdateOrderDetails" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="OrderDetails.Id" value="@OrderDetails.Id" />
+                <div class="mb-3">
+                    <label for="quantity" class="form-label">Quantity:</label>
+                    <InputNumber id="quantity" @bind-Value="OrderDetails.Quantity" class="form-control" />
+                    <ValidationMessage For="() => OrderDetails.Quantity" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="totalprice" class="form-label">TotalPrice:</label>
+                    <InputNumber id="totalprice" @bind-Value="OrderDetails.TotalPrice" class="form-control" />
+                    <ValidationMessage For="() => OrderDetails.TotalPrice" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="orderid" class="form-label">OrderId:</label>
+                    <InputNumber id="orderid" @bind-Value="OrderDetails.OrderId" class="form-control" />
+                    <ValidationMessage For="() => OrderDetails.OrderId" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="itemid" class="form-label">ItemId:</label>
+                    <InputNumber id="itemid" @bind-Value="OrderDetails.ItemId" class="form-control" />
+                    <ValidationMessage For="() => OrderDetails.ItemId" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/orderdetails">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private OrderDetails? OrderDetails { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        OrderDetails ??= await context.OrderDetails.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (OrderDetails is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateOrderDetails()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(OrderDetails!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!OrderDetailsExists(OrderDetails!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/orderdetails");
+    }
+
+    private bool OrderDetailsExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.OrderDetails.Any(e => e.Id == id);
+    }
+}

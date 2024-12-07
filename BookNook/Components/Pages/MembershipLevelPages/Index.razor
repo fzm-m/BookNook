@@ -1,0 +1,37 @@
+﻿@page "/membershiplevels"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using BookNook.Domain
+@using BookNook.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<BookNook.Data.BookNookContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="membershiplevels/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.MembershipLevel">
+    <PropertyColumn Property="membershiplevel => membershiplevel.DiscountRate" />
+    <PropertyColumn Property="membershiplevel => membershiplevel.MembershipId" />
+
+    <TemplateColumn Context="membershiplevel">
+        <a href="@($"membershiplevels/edit?id={membershiplevel.Id}")">Edit</a> |
+        <a href="@($"membershiplevels/details?id={membershiplevel.Id}")">Details</a> |
+        <a href="@($"membershiplevels/delete?id={membershiplevel.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private BookNookContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

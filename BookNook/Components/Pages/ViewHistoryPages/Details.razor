@@ -1,0 +1,50 @@
+﻿@page "/viewhistories/details"
+@using Microsoft.EntityFrameworkCore
+@using BookNook.Domain
+@inject IDbContextFactory<BookNook.Data.BookNookContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>ViewHistory</h2>
+    <hr />
+    @if (viewhistory is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">ViewDate</dt>
+            <dd class="col-sm-10">@viewhistory.ViewDate</dd>
+            <dt class="col-sm-2">UserId</dt>
+            <dd class="col-sm-10">@viewhistory.UserId</dd>
+            <dt class="col-sm-2">ItemId</dt>
+            <dd class="col-sm-10">@viewhistory.ItemId</dd>
+        </dl>
+        <div>
+            <a href="@($"/viewhistories/edit?id={viewhistory.Id}")">Edit</a> |
+            <a href="@($"/viewhistories")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private ViewHistory? viewhistory;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        viewhistory = await context.ViewHistory.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (viewhistory is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

@@ -1,0 +1,38 @@
+﻿@page "/carts"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using BookNook.Domain
+@using BookNook.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<BookNook.Data.BookNookContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="carts/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Cart">
+    <PropertyColumn Property="cart => cart.DateAdded" />
+    <PropertyColumn Property="cart => cart.UserId" />
+    <PropertyColumn Property="cart => cart.ItemId" />
+
+    <TemplateColumn Context="cart">
+        <a href="@($"carts/edit?id={cart.Id}")">Edit</a> |
+        <a href="@($"carts/details?id={cart.Id}")">Details</a> |
+        <a href="@($"carts/delete?id={cart.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private BookNookContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

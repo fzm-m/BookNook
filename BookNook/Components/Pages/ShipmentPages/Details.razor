@@ -1,0 +1,52 @@
+﻿@page "/shipments/details"
+@using Microsoft.EntityFrameworkCore
+@using BookNook.Domain
+@inject IDbContextFactory<BookNook.Data.BookNookContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>Shipment</h2>
+    <hr />
+    @if (shipment is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">ShipmentDate</dt>
+            <dd class="col-sm-10">@shipment.ShipmentDate</dd>
+            <dt class="col-sm-2">TrackingNumber</dt>
+            <dd class="col-sm-10">@shipment.TrackingNumber</dd>
+            <dt class="col-sm-2">Status</dt>
+            <dd class="col-sm-10">@shipment.Status</dd>
+            <dt class="col-sm-2">OrderId</dt>
+            <dd class="col-sm-10">@shipment.OrderId</dd>
+        </dl>
+        <div>
+            <a href="@($"/shipments/edit?id={shipment.Id}")">Edit</a> |
+            <a href="@($"/shipments")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private Shipment? shipment;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        shipment = await context.Shipment.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (shipment is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

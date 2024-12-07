@@ -1,0 +1,39 @@
+﻿@page "/orderdetails"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using BookNook.Domain
+@using BookNook.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<BookNook.Data.BookNookContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="orderdetails/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.OrderDetails">
+    <PropertyColumn Property="orderdetails => orderdetails.Quantity" />
+    <PropertyColumn Property="orderdetails => orderdetails.TotalPrice" />
+    <PropertyColumn Property="orderdetails => orderdetails.OrderId" />
+    <PropertyColumn Property="orderdetails => orderdetails.ItemId" />
+
+    <TemplateColumn Context="orderdetails">
+        <a href="@($"orderdetails/edit?id={orderdetails.Id}")">Edit</a> |
+        <a href="@($"orderdetails/details?id={orderdetails.Id}")">Details</a> |
+        <a href="@($"orderdetails/delete?id={orderdetails.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private BookNookContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

@@ -1,0 +1,104 @@
+﻿@page "/shipments/edit"
+@using Microsoft.EntityFrameworkCore
+@using BookNook.Domain
+@inject IDbContextFactory<BookNook.Data.BookNookContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>Shipment</h2>
+<hr />
+@if (Shipment is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="Shipment" OnValidSubmit="UpdateShipment" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="Shipment.Id" value="@Shipment.Id" />
+                <div class="mb-3">
+                    <label for="shipmentdate" class="form-label">ShipmentDate:</label>
+                    <InputDate id="shipmentdate" @bind-Value="Shipment.ShipmentDate" class="form-control" />
+                    <ValidationMessage For="() => Shipment.ShipmentDate" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="trackingnumber" class="form-label">TrackingNumber:</label>
+                    <InputText id="trackingnumber" @bind-Value="Shipment.TrackingNumber" class="form-control" />
+                    <ValidationMessage For="() => Shipment.TrackingNumber" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="status" class="form-label">Status:</label>
+                    <InputText id="status" @bind-Value="Shipment.Status" class="form-control" />
+                    <ValidationMessage For="() => Shipment.Status" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="orderid" class="form-label">OrderId:</label>
+                    <InputNumber id="orderid" @bind-Value="Shipment.OrderId" class="form-control" />
+                    <ValidationMessage For="() => Shipment.OrderId" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/shipments">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private Shipment? Shipment { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        Shipment ??= await context.Shipment.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (Shipment is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateShipment()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(Shipment!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!ShipmentExists(Shipment!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/shipments");
+    }
+
+    private bool ShipmentExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.Shipment.Any(e => e.Id == id);
+    }
+}

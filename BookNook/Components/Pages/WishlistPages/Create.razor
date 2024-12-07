@@ -1,0 +1,49 @@
+﻿@page "/wishlists/create"
+@using Microsoft.EntityFrameworkCore
+@using BookNook.Domain
+@inject IDbContextFactory<BookNook.Data.BookNookContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Wishlist</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Wishlist" OnValidSubmit="AddWishlist" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="datecreated" class="form-label">DateCreated:</label> 
+                <InputDate id="datecreated" @bind-Value="Wishlist.DateCreated" class="form-control" /> 
+                <ValidationMessage For="() => Wishlist.DateCreated" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="userid" class="form-label">UserId:</label> 
+                <InputNumber id="userid" @bind-Value="Wishlist.UserId" class="form-control" /> 
+                <ValidationMessage For="() => Wishlist.UserId" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/wishlists">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Wishlist Wishlist { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddWishlist()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Wishlist.Add(Wishlist);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/wishlists");
+    }
+}

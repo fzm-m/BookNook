@@ -1,0 +1,56 @@
+﻿@page "/promotions/details"
+@using Microsoft.EntityFrameworkCore
+@using BookNook.Domain
+@inject IDbContextFactory<BookNook.Data.BookNookContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>Promotion</h2>
+    <hr />
+    @if (promotion is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">PromoCode</dt>
+            <dd class="col-sm-10">@promotion.PromoCode</dd>
+            <dt class="col-sm-2">Description</dt>
+            <dd class="col-sm-10">@promotion.Description</dd>
+            <dt class="col-sm-2">DiscountPercentage</dt>
+            <dd class="col-sm-10">@promotion.DiscountPercentage</dd>
+            <dt class="col-sm-2">StartDate</dt>
+            <dd class="col-sm-10">@promotion.StartDate</dd>
+            <dt class="col-sm-2">EndDate</dt>
+            <dd class="col-sm-10">@promotion.EndDate</dd>
+            <dt class="col-sm-2">ApplicableTo</dt>
+            <dd class="col-sm-10">@promotion.ApplicableTo</dd>
+        </dl>
+        <div>
+            <a href="@($"/promotions/edit?id={promotion.Id}")">Edit</a> |
+            <a href="@($"/promotions")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private Promotion? promotion;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        promotion = await context.Promotion.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (promotion is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}
