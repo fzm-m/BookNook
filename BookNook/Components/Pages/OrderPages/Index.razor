@@ -6,6 +6,8 @@
 @implements IAsyncDisposable
 @inject IDbContextFactory<BookNook.Data.BookNookContext> DbFactory
 
+@attribute [Authorize(Roles = "Administrator, User")]
+
 <PageTitle>Index</PageTitle>
 
 <h1>Index</h1>
@@ -24,8 +26,10 @@
 
     <TemplateColumn Context="order">
         <a href="@($"orders/edit?id={order.Id}")">Edit</a> |
-        <a href="@($"orders/details?id={order.Id}")">Details</a> |
+        <a href="@($"orders/details?id={order.Id}")">Details</a>
+        <AuthorizeView Roles="Administrator">
         <a href="@($"orders/delete?id={order.Id}")">Delete</a>
+        </AuthorizeView>
     </TemplateColumn>
 </QuickGrid>
 

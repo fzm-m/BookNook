@@ -4,6 +4,8 @@
 @inject IDbContextFactory<BookNook.Data.BookNookContext> DbFactory
 @inject NavigationManager NavigationManager
 
+@attribute [Authorize(Roles = "Administrator")]
+
 <PageTitle>Delete</PageTitle>
 
 <h1>Delete</h1>
