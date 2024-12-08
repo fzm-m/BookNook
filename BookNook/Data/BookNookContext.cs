@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using BookNook.Domain;
+using BookNook.Data;
 
 namespace BookNook.Data
 {
-    public class BookNookContext : DbContext
+    public class BookNookContext(DbContextOptions<BookNookContext> options) : IdentityDbContext<BookNookUser>(options)
     {
-        public BookNookContext (DbContextOptions<BookNookContext> options)
-            : base(options)
-        {
-        }
-
         public DbSet<BookNook.Domain.Item> Item { get; set; } = default!;
         public DbSet<BookNook.Domain.Cart> Cart { get; set; } = default!;
         public DbSet<BookNook.Domain.Membership> Membership { get; set; } = default!;
@@ -27,5 +19,6 @@ namespace BookNook.Data
         public DbSet<BookNook.Domain.Wishlist> Wishlist { get; set; } = default!;
         public DbSet<BookNook.Domain.ViewHistory> ViewHistory { get; set; } = default!;
         public DbSet<BookNook.Domain.User> User { get; set; } = default!;
+
     }
 }
