@@ -21,7 +21,10 @@
 }
 
 .navbar-brand {
-    font-size: 1.1rem;
+    display: flex;
+    align-items: center; /* Vertically align icon and text */
+    gap: 0.5rem; /* Add spacing between icon and text */
+    font-size: 1.1rem; /* Adjust text size */
 }
 
 .bi {

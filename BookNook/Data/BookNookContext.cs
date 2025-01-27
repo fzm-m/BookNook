@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using BookNook.Data;
+using BookNook.Configurations.Entities;
 
 namespace BookNook.Data
 {
@@ -19,6 +20,12 @@ namespace BookNook.Data
         public DbSet<BookNook.Domain.Wishlist> Wishlist { get; set; } = default!;
         public DbSet<BookNook.Domain.ViewHistory> ViewHistory { get; set; } = default!;
         public DbSet<BookNook.Domain.User> User { get; set; } = default!;
-
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            builder.ApplyConfiguration(new RoleSeed());
+            builder.ApplyConfiguration(new UserRoleSeed());
+            builder.ApplyConfiguration(new UserSeed());
+        }
     }
 }

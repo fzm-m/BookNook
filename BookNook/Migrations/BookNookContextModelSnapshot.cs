@@ -91,6 +91,26 @@ namespace BookNook.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "3781efa7-66dc-47f0-860f-e506d04102e4",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "5cb5a06b-8df4-4341-b7b4-86d855da07ba",
+                            Email = "admin@localhost.com",
+                            EmailConfirmed = true,
+                            FirstName = "Admin",
+                            LastName = "User",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@LOCALHOST.COM",
+                            NormalizedUserName = "ADMIN@LOCALHOST.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPGR/joWKMBNXqQt7DZvl/jJb5l6a3Tnl3gVwPoomf0itLyuXAEkyl5nHdYisWdQ7Q==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "f006f7c3-cc54-44a9-8e84-6d4a7ee1c445",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@localhost.com"
+                        });
                 });
 
             modelBuilder.Entity("BookNook.Domain.Cart", b =>
@@ -449,6 +469,20 @@ namespace BookNook.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "ad2bcf0c-20db-474f-8407-5a6b159518ba",
+                            Name = "Administrator",
+                            NormalizedName = "ADMINISTRATOR"
+                        },
+                        new
+                        {
+                            Id = "bd2bcf0c-20db-474f-8407-5a6b159518bb",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -536,6 +570,13 @@ namespace BookNook.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "3781efa7-66dc-47f0-860f-e506d04102e4",
+                            RoleId = "ad2bcf0c-20db-474f-8407-5a6b159518ba"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>

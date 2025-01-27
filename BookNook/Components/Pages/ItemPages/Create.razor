@@ -19,12 +19,17 @@
                 <label for="name" class="form-label">Name:</label> 
                 <InputText id="name" @bind-Value="Item.Name" class="form-control" /> 
                 <ValidationMessage For="() => Item.Name" class="text-danger" /> 
-            </div>        
+            </div>
+            <!-- Type Field (Dropdown) -->
             <div class="mb-3">
-                <label for="type" class="form-label">Type:</label> 
-                <InputText id="type" @bind-Value="Item.Type" class="form-control" /> 
-                <ValidationMessage For="() => Item.Type" class="text-danger" /> 
-            </div>        
+                <label for="type" class="form-label">Type:</label>
+                <InputSelect id="type" @bind-Value="Item.Type" class="form-control">
+                    <option value="">-- Select Type --</option>
+                    <option value="Book">Book</option>
+                    <option value="Stationery">Stationery</option>
+                </InputSelect>
+                <ValidationMessage For="() => Item.Type" class="text-danger" />
+            </div>
             <div class="mb-3">
                 <label for="description" class="form-label">Description:</label> 
                 <InputText id="description" @bind-Value="Item.Description" class="form-control" /> 

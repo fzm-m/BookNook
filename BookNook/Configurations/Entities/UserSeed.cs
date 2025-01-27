@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using BookNook.Data;
 
-namespace BookNook.Components.Entities
+namespace BookNook.Configurations.Entities
 {
     public class UserSeed : IEntityTypeConfiguration<BookNookUser>
     {

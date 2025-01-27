@@ -1,7 +1,44 @@
 ﻿@page "/stationery"
+@using Microsoft.EntityFrameworkCore
+@using BookNook.Domain
+@inject IDbContextFactory<BookNook.Data.BookNookContext> DbFactory
+@inject NavigationManager NavigationManager
 
 <h3>View Stationery Products</h3>
 
-@code {
+<div class="row">
+    @if (Items != null && Items.Any())
+    {
+        @foreach (var item in Items)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <!-- No image handling in this version -->
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Name</h5>
+                        <p class="card-text">@item.Description</p>
+                        <p class="card-text">Price: @item.Price</p>
+                        <p class="card-text">Stock: @item.Stock</p>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p>No stationery found.</p>  <!-- Display if no stationery items are available -->
+    }
+</div>
 
+@code {
+    // List to hold the stationery items
+    private List<Item> Items { get; set; } = new List<Item>(); 
+
+    // This method is called when the page is initialized
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();  // Use DbContext to interact with the database
+        // Fetch all items where the Type is "Stationery" and store them in the Items list
+        Items = await context.Item.Where(i => i.Type == "Stationery").ToListAsync();
+    }
 }

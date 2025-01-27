@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookNook.Components.Entities
+namespace BookNook.Configurations.Entities
 {
     public class UserRoleSeed : IEntityTypeConfiguration<IdentityUserRole<string>>
     {
